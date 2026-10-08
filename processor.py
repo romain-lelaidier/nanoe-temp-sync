@@ -24,7 +24,7 @@ def fetch_all_external_data():
                 logger.warning("Source (%s) has missing name or type", str(source))
                 continue
 
-            logger.info(f"Fetching external data '{s_name}' (type: '{s_type}')")
+            logger.info(f"Fetching source '{s_name}' (type: '{s_type}')")
 
             if s_type == "sql":
                 s_sql_file = source.get("sql_file")
@@ -41,10 +41,13 @@ def fetch_all_external_data():
 
 def export_as_csv(data: dict):
     config = ServiceConfig()
+    if config.EXPORT_DIR is None or config.EXPORT_DIR == '':
+        return
     if not os.path.exists(config.EXPORT_DIR):
         os.mkdir(config.EXPORT_DIR)
     folder = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
     path = f"{config.EXPORT_DIR}/{folder}"
+    logger.info("Exporting to csv (%s)", path)
     if not os.path.exists(path):
         os.mkdir(path)
     for key, df in data.items():
@@ -54,18 +57,13 @@ def export_as_csv(data: dict):
 def run_airtable_full_sync():
     logger = get_logger(__name__)
     try:
-        logger.info("Fetching all external data")
         data = fetch_all_external_data()
-        
-        logger.info("Exporting to csv")
         export_as_csv(data)
-
-        logger.info("Uploading all data to airtable")
         airtable_config = get_airtable_config()
         airtable_sync_engine = get_airtable_sync_engine()
         for table_key in airtable_config.tables:
             if table_key in data:
-                logger.info("Uploading to airtable: %s", table_key)
+                logger.info("Uploading to Airtable: table '%s' (%i rows)", table_key, len(data[table_key]))
                 # table = airtable_config.get_table(table_key)
                 # print(table.get_fields())
                 airtable_sync_engine.sync_dataframe(

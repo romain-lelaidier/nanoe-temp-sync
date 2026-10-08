@@ -20,7 +20,7 @@ class ServiceConfig(BaseSettings):
         description="Path to logging config file"
     )
 
-    EXPORT_DIR: str = Field(default="./exports", description="temporary exports")
+    EXPORT_DIR: str = Field(default="", description="temporary exports")
 
     # Airtable configuration
     AIRTABLE_TOKEN: str = Field(default=None, description="Airtable app token")

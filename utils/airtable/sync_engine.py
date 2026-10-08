@@ -46,7 +46,7 @@ class AirtableSyncEngine:
             Dictionnaire avec les statistiques de synchronisation
         """
 
-        logger.info("Synchronisation de la table '%s'; %i rows. Options : %s", table_key, len(df), str({ "dry_run": dry_run, "delete_missing_records": delete_missing_records }))
+        # logger.info("Synchronisation de la table '%s'; %i rows. Options : %s", table_key, len(df), str({ "dry_run": dry_run, "delete_missing_records": delete_missing_records }))
         
         table = self.airtable_config.get_table(table_key)
         df = table.convert_sql_fields_to_field_names(df)
@@ -100,7 +100,7 @@ class AirtableSyncEngine:
         to_update = comparison_result['to_update']
         unchanged = comparison_result['unchanged']
         
-        logger.info("sync.diff.summary (table %s) : %i entrées à créer, %i à actualiser, %i à supprimer, %i inchangées", table_key, len(to_create), len(to_update), len(to_delete), len(unchanged))
+        logger.info("sync.diff.summary (table %s) : %i records to create, %i to update, %i to delete, %i to leave as", table_key, len(to_create), len(to_update), len(to_delete), len(unchanged))
         
         stats = {
             'total_rows': len(df),
@@ -136,7 +136,7 @@ class AirtableSyncEngine:
             stats['errors'] += len(update_errors)
             stats['error_details'].extend(update_errors)
         
-        logger.info("sync.completed (table %s) : %i entrées créées, %i actualisées, %i supprimées. %i erreurs", table_key, stats['created'], stats['updated'], stats.get('deleted', 0), stats['errors'])
+        logger.info("sync.completed (table %s) : %i records created, %i updated, %i deleted ; %i errors", table_key, stats['created'], stats['updated'], stats.get('deleted', 0), stats['errors'])
         
         return stats
     
