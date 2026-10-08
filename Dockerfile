@@ -1,4 +1,4 @@
-FROM python:3.12-slim
+FROM python:3.14-slim
 
 # Pin the uv version for reproducibility
 COPY --from=ghcr.io/astral-sh/uv:0.5 /uv /uvx /bin/
