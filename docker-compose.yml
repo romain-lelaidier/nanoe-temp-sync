@@ -2,3 +2,6 @@ services:
   airtable-temp-sync:
     build: .
     container_name: airtable-temp-sync
+    restart: unless-stopped
+    env_file:
+      - stack.env
