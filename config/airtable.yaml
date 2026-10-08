@@ -1,0 +1,46 @@
+base_id: appNldmUtdz1AzRpn
+tables:
+  - key: staff
+    id: tbl3kXiVqwU6X6SMw
+    primary_key: si_id
+    fields:
+      - fldmnFrFC6jMbz9Qs:si_id
+      - fldT6k8G53MoDPB7Z:prenom
+      - fldm3psacu0o9vlTg:nom
+      - fldvQq6F4pV5rFjhL:email
+      - fldj47d5amSrBHP5o:actif
+      - fldmjU29OQyot3mAT:telephone
+      - fldprzR92urRqSNEc:telephone_flotte
+      - fldIj0glZPIHhKhzw:is_ne
+  - key: nr
+    id: tbllb6HNmeAFSzQs8
+    primary_key: n
+    fields:
+      - fldvZgp4FYn5j8lrh:n
+      - fldiTT4a3FZWozwVQ:statut
+      - fldedBmFjpvkSeXeH:ne
+      - fldjUI9MwJ2YEks6o:zone
+  - key: zone
+    id: tbl7vef9mJBZCvtsX
+    primary_key: zone
+    fields:
+      - fldPKp5knwPV9VC67:zone
+      - fldX7MLwfjy4YD3VK:commune
+      - fldvteYS8uj7Cul1o:district
+      - fldJyqxw9eKqNmgpW:agence
+  - key: prospect
+    id: tblBYRl9ASOkB7aDY
+    primary_key: n
+    fields:
+      - fldRY7yJSAB9dXsLs:n
+      - fldE6v0ThZ6BHTD3Y:n_client
+      - fld84mN87OoCMP7Mh:statut
+      - fldgJsDCvSHq963IR:nom
+      - fldlsswb3VxGqEXl3:metier
+      - fldaQlcQAYswRwFb3:telephone
+      - fldLSgL55krpn6ys3:zone
+      - fldVUahqaAAgXOi1a:latitude
+      - fldMIysHRpUjKQjxO:longitude
+      - fldIv8k3Fl4dahqws:nr
+      - fld2C2cczXaJB6OSd:date_raccordement
+      - flddPvgHWNuagAITP:forfait

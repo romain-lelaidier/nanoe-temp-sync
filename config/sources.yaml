@@ -1,0 +1,19 @@
+- name: nr
+  type: sql
+  sql_file: nr.sql
+  active: true
+
+- name: staff
+  type: sql
+  sql_file: staff.sql
+  active: true
+
+- name: zone
+  type: sql
+  sql_file: zone.sql
+  active: true
+
+- name: prospect
+  type: sql
+  sql_file: prospect.sql
+  active: true
