@@ -1,10 +1,12 @@
 base_id: appNldmUtdz1AzRpn
 tables:
+
   - key: staff
     id: tbl3kXiVqwU6X6SMw
     primary_key: si_id
     fields:
       - fldmnFrFC6jMbz9Qs:si_id
+      - fld5uKJf97RIwhIod:last_sync
       - fldT6k8G53MoDPB7Z:prenom
       - fldm3psacu0o9vlTg:nom
       - fldvQq6F4pV5rFjhL:email
@@ -12,27 +14,33 @@ tables:
       - fldmjU29OQyot3mAT:telephone
       - fldprzR92urRqSNEc:telephone_flotte
       - fldIj0glZPIHhKhzw:is_ne
-  - key: nr
-    id: tbllb6HNmeAFSzQs8
-    primary_key: n
-    fields:
-      - fldvZgp4FYn5j8lrh:n
-      - fldiTT4a3FZWozwVQ:statut
-      - fldedBmFjpvkSeXeH:ne
-      - fldjUI9MwJ2YEks6o:zone
+
   - key: zone
     id: tbl7vef9mJBZCvtsX
     primary_key: zone
     fields:
       - fldPKp5knwPV9VC67:zone
+      - fldRZkU6hRNCtsvTS:last_sync
       - fldX7MLwfjy4YD3VK:commune
       - fldvteYS8uj7Cul1o:district
       - fldJyqxw9eKqNmgpW:agence
+
+  - key: nr
+    id: tbllb6HNmeAFSzQs8
+    primary_key: n
+    fields:
+      - fldvZgp4FYn5j8lrh:n
+      - fldbqmCOYFJQnQELS:last_sync
+      - fldiTT4a3FZWozwVQ:statut
+      - fldedBmFjpvkSeXeH:ne
+      - fldjUI9MwJ2YEks6o:zone
+
   - key: prospect
     id: tblBYRl9ASOkB7aDY
     primary_key: n
     fields:
       - fldRY7yJSAB9dXsLs:n
+      - fldzocDbNfe6NkonX:last_sync
       - fldE6v0ThZ6BHTD3Y:n_client
       - fld84mN87OoCMP7Mh:statut
       - fldgJsDCvSHq963IR:nom
