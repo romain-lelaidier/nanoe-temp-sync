@@ -4,6 +4,7 @@ Moteur de synchronisation Airtable
 import pandas as pd
 from alive_progress import alive_bar
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from typing import Dict, List, Optional, Tuple
 from utils.airtable.client import get_airtable_client
 from utils.airtable.record_comparator import batch_compare_records, clean_record_for_comparison
@@ -50,7 +51,7 @@ class AirtableSyncEngine:
         # logger.info("Synchronisation de la table '%s'; %i rows. Options : %s", table_key, len(df), str({ "dry_run": dry_run, "delete_missing_records": delete_missing_records }))
         
         table = self.airtable_config.get_table(table_key)
-        df["last_sync"] = datetime.now()
+        df["last_sync"] = datetime.now(ZoneInfo("Indian/Antananarivo"))
         df = table.convert_sql_fields_to_field_names(df)
         df_clean = df.copy()
         
