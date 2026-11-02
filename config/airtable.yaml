@@ -11,9 +11,11 @@ tables:
       - fldm3psacu0o9vlTg:nom
       - fldvQq6F4pV5rFjhL:email
       - fldj47d5amSrBHP5o:actif
+      - fldCv8xZq7qCdXx0A:agence
       - fldmjU29OQyot3mAT:telephone
       - fldprzR92urRqSNEc:telephone_flotte
-      - fldIj0glZPIHhKhzw:is_ne
+      # - fldIj0glZPIHhKhzw:is_ne
+      - fldtHLr8w5ndBRIPZ:roles
 
   - key: zone
     id: tbl7vef9mJBZCvtsX
