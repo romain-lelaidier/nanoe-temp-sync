@@ -26,6 +26,7 @@ class ServiceConfig(BaseSettings):
     AIRTABLE_TOKEN: str = Field(default=None, description="Airtable app token")
     # KOBO configuration
     KOBO_TOKEN: str = Field(default=None, description="KoBo app token")
+    KOBO_TOKEN_NANOE_NET: str = Field(default=None, description="KOBO auto-hébergés (kc.nanoe.net)")
     # Dropbox configuration
     # "select_user" : "dbmid:AACCI55eCmRrwEkGkMsNoBNOUJfzLj1Qk4s",
     # "app_key" : "k734ea5bmftlb51",

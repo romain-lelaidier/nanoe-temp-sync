@@ -1,19 +1,38 @@
 - name: nr
   type: sql
   sql_file: nr.sql
-  active: true
 
 - name: staff
   type: sql
   sql_file: staff.sql
-  active: true
 
 - name: zone
   type: sql
   sql_file: zone.sql
-  active: true
 
 - name: prospect
   type: sql
   sql_file: prospect.sql
-  active: true
+
+- name: enquetes-techniques-reimport
+  csv_folder: interventions
+  type: kobo
+  airtable_key: enquetes-techniques
+  airtable_options: dryrun
+  active: false
+
+- name: visites-att
+  type: kobo
+  airtable_key: enquetes-techniques
+  airtable_options: update,add   # no deletion
+  server: https://kobo.nanoe.net
+  token_env: KOBO_TOKEN_NANOE_NET
+  asset_uid: ayfkft4KAjdNjmMfHdbia4
+
+- name: controles-qualite
+  type: kobo
+  airtable_key: enquetes-techniques
+  airtable_options: update,add   # no deletion
+  server: https://kobo.nanoe.net
+  token_env: KOBO_TOKEN_NANOE_NET
+  asset_uid: aUbS7QfRtq53cBDfKS357T

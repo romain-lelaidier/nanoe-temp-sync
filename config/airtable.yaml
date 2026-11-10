@@ -3,9 +3,9 @@ tables:
 
   - key: staff
     id: tbl3kXiVqwU6X6SMw
-    primary_key: si_id
+    primary_key: id
     fields:
-      - fldmnFrFC6jMbz9Qs:si_id
+      - fldmnFrFC6jMbz9Qs:id
       - fld5uKJf97RIwhIod:last_sync
       - fldT6k8G53MoDPB7Z:prenom
       - fldm3psacu0o9vlTg:nom
@@ -54,3 +54,83 @@ tables:
       - fldIv8k3Fl4dahqws:nr
       - fld2C2cczXaJB6OSd:date_raccordement
       - flddPvgHWNuagAITP:forfait
+
+  - key: enquetes-techniques
+    id: tblMjqreKmznMKSn8
+    fields:
+      - fld9iDnT6FR4xSSaL:id
+      - fldZvbEDy7jezPFWl:last_sync
+      - fldgUKKEvJjgj19mV:date
+      - fldkPpIQ8Ct01O1vb:type
+      - fld71NYGMZuQseglc:nr
+      - fldpLQM4y2bgOT2QN:agence
+      - fldCfXVeI64KNL4Ho:agent
+      - fldGkaIpDzNTx5G4a:motif
+      - fld5oa7lewKt0R6Jz:presence_poteau
+      - fldSYQszAris75YM9:latitude_poteau
+      - fldn0t6DFQ7D4AL0M:longitude_poteau
+      - fldicrKcGloyeDQcD:altitude_poteau
+      - fldgs1e3gzMFFHXu3:precision_gps_poteau
+      - fldl22pz9v84H1iFg:nombre_batteries
+      - fldmhT4BU7TWu41kH:id_batterie_1
+      - fldi7Lcov7n7TWaTk:id_batterie_2
+      - fldr2JLOmsBgA15Po:kit_panneau
+      - fld8VfHEGloyLwqLh:orientation_panneau
+      - fldJvbOmI3DA9eyJl:photo_nr_url
+      - fldu9HEyJibqphLoP:type_controleur
+      - fldPY9MuUJrSZSBmN:id_controleur
+      - fld0HT50qi2GH6pRg:id_interface
+      - fldxNjTieC3E6P2fO:presence_carte_sd
+      - fld0TAnWMc0Ohn39c:presence_cpf
+      - fld9tgUWcE3EbwHiZ:presence_congel
+      - fld1cHZJGNJwAmopd:photo_congel_url
+      - fldjrUUCWPmnsOqCi:visite_client_coffre
+      - fld286RXIhQjRCd8q:numero_client_coffre
+      - fldxS46Nczqn7tnt0:rs_realisee
+      - fldxZZQDgxZPeXZhr:mode_eco_active_apres_passage
+      - fld7dqlpt1YE5fz06:probleme_mode_eco
+      - fldeqU21V4xtOS0Ov:presence_cadenas
+      - fldLBEAgRJpSgtid1:coffre_ouvert
+      - fldN8f3A8z7VKUPCl:photo_interieur_coffre_url
+      - fldNBdOV8yKawglyJ:correspondance_kit_batterie_kit_solaire
+      - fldTQvmjMW5CmzNi4:piquage
+      - fldJ6VcWtwOMn6oPb:panne_a_l_arrivee
+      - fld0hdSbEcff5myZB:pannes_regulieres_nr
+      - fldj5xhJnTnVXowIo:temps_panne
+      - fldn3c01P18eHHkgD:photo_panne_url
+      - fldIMP6cuuJq4rUF4:rt_realisee
+      - fldjOHfXimPH9N5P4:traitement_rt_sur_place
+      - fldj0TYTriRIrUHOm:traitement_rt_sur_place_pourquoi
+      - fld07Pndlihb3wtBx:symptomes_panne
+      - fldV17CHswWmv8GPC:causes_panne
+      - fldneZ3wPTGts8ApA:depannage_realise
+      - fldzekCAvrrevkMxj:precisions_depannage
+      - fldAmZB8gzJOP3qyG:panne_resolue
+      - fldQqzXKCBCHldO4Q:panne_non_resolue_reste
+      - fldDqPXyMw9hnQv7r:panne_causee_par_comprehension_client
+      - fldwa4nByu9TbfWWx:depannage_par_ne_possible
+      - fldhDuJ1pfXkt8iE8:defauts_apres_passage
+      - fldWvqzRJpauYYiYH:defauts_apres_passage_precision
+      - fldldELvZ3F8PV1BI:zone_mr
+      - fld7orw9U0flXwV3B:equipe_mr
+      - fldZHUtu2ATJgCJnO:clients_visites
+      - fldGyqjXq5sQoq7Ym:coherence_forfait_materiel_client_1
+      - fldWVI4gqabLp7XjO:coherence_forfait_materiel_client_2
+      - fldPhIP0Y9xfrKiq2:coherence_forfait_materiel_client_3
+      - fldEc19E68KuQEZvp:coherence_forfait_materiel_client_4
+      - fldfgHnOAZbimZf2R:coherence_forfait_materiel_client_5
+      - fldUpsTqV2dP00u5J:probleme_client_1
+      - fld26baIDjfOfDuq1:probleme_client_2
+      - fldaBeU1hCRP6uzIS:probleme_client_3
+      - fldHG06npCdfJti8n:probleme_client_4
+      - fldFfuTApQy7WrtQu:probleme_client_5
+      - fldDs8VrUSVNPJrnj:visite_doit_etre_mentionnee_reunion_equipe
+      - fldIxZidkRRodUzQ1:besoin_support_commercial
+      - fldI9VjpbhddlA7iR:commentaire_commercial
+      - fldc2cNH5zgJ9vFPX:ne_present
+      - fldA9nWcduHjyJNwt:temps_sur_mec
+      - fld9SxAyjXVrobGR1:mec_realisees
+      - fldmo8lkVl6t7kcmn:mec_realisees_autre
+      - flda6WUwcIfUkJFrS:note_cq
+      - fld4sOxEXGM2xoypI:commentaire_general
+      - fldsPu9SbK7B7Rsvj:erreur

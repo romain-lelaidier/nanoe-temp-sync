@@ -1,4 +1,3 @@
-import logging
 import pandas as pd
 from pathlib import Path
 from typing import Optional
@@ -9,8 +8,6 @@ from contextlib import contextmanager
 
 from utils.config import ServiceConfig
 from utils.logger import get_logger
-
-logger = logging.getLogger(__name__)
 
 
 class DatabaseConnection:
