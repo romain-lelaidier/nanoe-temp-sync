@@ -13,8 +13,7 @@ from utils.airtable.config import get_airtable_config
 from utils.logger import get_logger
 # from alive_progress import alive_bar
 
-logger = get_logger(__name__)
-
+logger = get_logger("sync_engine")
 
 class AirtableSyncEngine:
     """
@@ -31,25 +30,14 @@ class AirtableSyncEngine:
         self,
         table_key: str,
         df: pd.DataFrame,
-        dry_run: bool = False,
-        delete_missing_records: bool = True,
+        airtable_options: str = None
+        # dry_run: bool = False,
+        # delete_missing_records: bool = True,
     ) -> Dict:
-        """
-        Synchronise un DataFrame complet avec une table Airtable
-        
-        Args:
-            table_key: Cle de la table (ex: 'nr', 'staff')
-            df: DataFrame a synchroniser
-            dry_run: Si True, simule la synchronisation sans ecrire
-            select_fields: Liste des champs select pour gestion auto des options
-            delete_missing_records: Si True, supprime les enregistrements qui n'existent pas dans le DataFrame
-        
-        Returns:
-            Dictionnaire avec les statistiques de synchronisation
-        """
-
         # logger.info("Synchronisation de la table '%s'; %i rows. Options : %s", table_key, len(df), str({ "dry_run": dry_run, "delete_missing_records": delete_missing_records }))
         
+        if airtable_options is None: airtable_options = "add,delete,update"
+
         table = self.airtable_config.get_table(table_key)
         df["last_sync"] = datetime.now(ZoneInfo("Indian/Antananarivo"))
         df = table.convert_sql_fields_to_field_names(df)
@@ -60,11 +48,14 @@ class AirtableSyncEngine:
         logger.debug("sync.fetch_existing.start (table %s)", table_key)
         existing_records = self.client.get_all_records(table_key)
         logger.debug("sync.fetch_existing.completed (table %s) : %i rows", table_key, len(existing_records))
-        
-        # Identifier les enregistrements à supprimer (présents dans Airtable mais pas dans le DataFrame ou présents en double dans Airtable)
-        to_delete = []
 
-        # Supprimer les enregistrements en double dans la table déjà existante
+        # traitement des options
+        airtable_options_list = airtable_options.split(',')
+        if 'dryrun' in airtable_options_list: airtable_options_list = []
+        
+        # Identification des enregistrements à supprimer (présents dans Airtable mais pas dans le DataFrame, ou présents en double dans Airtable)
+        to_delete = []
+        # Identification des enregistrements en double dans la table déjà existante
         existing_records_keys = set()
         for existing_record in existing_records:
             fields = existing_record.get('fields', {})
@@ -74,22 +65,17 @@ class AirtableSyncEngine:
                     to_delete.append(existing_record)
                     existing_records.remove(existing_record)
                 existing_records_keys.add(str(key_value))
-        
-        if delete_missing_records:
-
-            # Créer un set des clés primaires du DataFrame et supprimer les enregistrements existants en double
-            df_keys = set()
-            for record in records_to_sync:
-                key_value = record.get(table.get_primary_field())
-                if key_value:
-                    df_keys.add(str(key_value))
-
-            # Trouver les enregistrements existants qui ne sont pas dans le DataFrame
-            for existing_record in existing_records:
-                fields = existing_record.get('fields', {})
-                key_value = fields.get(table.get_primary_field())
-                if key_value and str(key_value) not in df_keys:
-                    to_delete.append(existing_record)
+        # Identification des enregistrements existants qui ne sont pas dans le DataFrame
+        df_keys = set()
+        for record in records_to_sync:
+            key_value = record.get(table.get_primary_field())
+            if key_value:
+                df_keys.add(str(key_value))
+        for existing_record in existing_records:
+            fields = existing_record.get('fields', {})
+            key_value = fields.get(table.get_primary_field())
+            if key_value and str(key_value) not in df_keys:
+                to_delete.append(existing_record)
 
         comparison_result = batch_compare_records(
             new_records=records_to_sync,
@@ -118,22 +104,22 @@ class AirtableSyncEngine:
             'error_details': []
         }
         
-        if dry_run:
+        if len(airtable_options_list) == 0:     # dry run
             return stats
-        
-        if to_delete:
+
+        if 'delete' in airtable_options_list and to_delete:
             deleted_count, delete_errors = self._delete_records_in_batches(table_key, to_delete)
             stats['deleted'] = deleted_count
             stats['errors'] += len(delete_errors)
             stats['error_details'].extend(delete_errors)
         
-        if to_create:
+        if 'add' in airtable_options_list and to_create:
             created_count, create_errors = self._create_records_in_batches(table_key, to_create)
             stats['created'] = created_count
             stats['errors'] += len(create_errors)
             stats['error_details'].extend(create_errors)
         
-        if to_update:
+        if 'update' in airtable_options_list and to_update:
             updated_count, update_errors = self._update_records_in_batches(table_key, to_update)
             stats['updated'] = updated_count
             stats['errors'] += len(update_errors)

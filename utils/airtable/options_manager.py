@@ -5,7 +5,7 @@ from typing import Dict, List, Set
 from pyairtable import Table
 from utils.logger import get_logger
 
-logger = get_logger(__name__)
+logger = get_logger("options_manager")
 
 class OptionsManager:
     """

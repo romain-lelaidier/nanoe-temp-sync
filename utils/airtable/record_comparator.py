@@ -9,7 +9,7 @@ from utils.logger import get_logger
 from utils.airtable.config import AirtableTable
 import re
 
-logger = get_logger(__name__)
+logger = get_logger("record_comparator")
 
 def normalize_singleselect_value(value: str, options: List[str]) -> Optional[str]:
     """

@@ -7,8 +7,7 @@ from utils.airtable.config import get_airtable_config
 from utils.config import ServiceConfig, yaml_load_config
 from utils.logger import get_logger
 
-logger = get_logger(__name__)
-
+logger = get_logger("airtable_client")
 
 class AirtableClient:
     """
@@ -42,7 +41,7 @@ class AirtableClient:
         
         return self._table_cache[cache_key]
     
-    def get_all_records(self, table_key: str, view: Optional[str] = None, formula: Optional[str] = None) -> List[Dict]:
+    def get_all_records(self, table_key: str, view: Optional[str] = None, formula: Optional[str] = None, fields: Optional[str] = None) -> List[Dict]:
         """
         Recupere tous les enregistrements d'une table
         
@@ -60,6 +59,8 @@ class AirtableClient:
                 params['view'] = view
             if formula:
                 params['formula'] = formula
+            if fields:
+                params['fields'] = fields
 
             table = self.airtable_config.get_table(table_key).table
             

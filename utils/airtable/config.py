@@ -3,6 +3,8 @@ import pandas as pd
 from utils.config import ServiceConfig, yaml_load_config
 from utils.logger import get_logger
 
+logger = get_logger("airtable_config")
+
 class AirtableTable:
     def __init__(self, airtable_token: str, base_id: str, obj: dict = {}):
         self.key = obj.get("key")
@@ -47,7 +49,7 @@ class AirtableTable:
                 to_remove.append(col)
 
         if len(to_remove) > 0:
-            get_logger(__name__).warning("SQL field conversion (%s): fields [%s] could not be matched", self.key, ','.join(to_remove))
+            logger.warning("SQL field conversion (%s): fields [%s] could not be matched", self.key, ','.join(to_remove))
 
         dfn = df.copy()
         dfn = dfn.drop(to_remove, axis=1)
