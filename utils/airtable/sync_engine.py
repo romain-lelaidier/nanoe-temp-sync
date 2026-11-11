@@ -134,7 +134,6 @@ class AirtableSyncEngine:
             stats['error_details'].extend(delete_errors)
 
         if 'clean' in airtable_options_list and to_clean:
-            print(to_clean)
             cleaned_count, clean_errors = self._delete_records_in_batches(table_key, to_clean)
             stats['cleaned'] = cleaned_count
             stats['errors'] += len(clean_errors)
