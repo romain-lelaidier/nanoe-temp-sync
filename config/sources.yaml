@@ -14,25 +14,64 @@
   type: sql
   sql_file: prospect.sql
 
-- name: enquetes-techniques-reimport
-  csv_folder: interventions
+- name: tech-visites-att
   type: kobo
   airtable_key: enquetes-techniques
-  airtable_options: dryrun
-  active: false
-
-- name: visites-att
-  type: kobo
-  airtable_key: enquetes-techniques
-  airtable_options: update,add   # no deletion
+  airtable_options: update,add    # no deletion
   server: https://kobo.nanoe.net
   token_env: KOBO_TOKEN_NANOE_NET
   asset_uid: ayfkft4KAjdNjmMfHdbia4
 
-- name: controles-qualite
+- name: tech-controles-qualite
   type: kobo
   airtable_key: enquetes-techniques
-  airtable_options: update,add   # no deletion
+  airtable_options: update,add    # no deletion
   server: https://kobo.nanoe.net
   token_env: KOBO_TOKEN_NANOE_NET
   asset_uid: aUbS7QfRtq53cBDfKS357T
+
+# - name: enquetes-techniques-reimport
+#   csv_folder: interventions
+#   type: kobo
+#   airtable_key: enquetes-techniques
+#   airtable_options: dryrun
+#   active: false
+
+- name: comm-clients-inactifs
+  type: kobo
+  airtable_key: enquetes-commerciales
+  airtable_options: update,add    # no deletion
+  server: https://kobo.nanoe.net
+  token_env: KOBO_TOKEN_NANOE_NET
+  asset_uid: a8ES4o3jGzMDzBnaZ2KEbo
+  addons: clients
+
+# - name: comm-clients-inactifs-reimport
+#   type: kobo
+#   csv_folder: comm-clients-inactifs-reimport
+#   airtable_key: enquetes-commerciales
+#   airtable_options: update,add    # no deletion
+#   addons: clients
+#   active: false
+
+- name: comm-tournees-recharge
+  type: kobo
+  airtable_key: enquetes-commerciales
+  airtable_options: update,add    # no deletion
+  server: https://kobo.nanoe.net
+  token_env: KOBO_TOKEN_NANOE_NET
+  asset_uid: as63jBkB83W83qWLntVgTE
+  addons: clients
+
+# - name: comm-tournees-recharge-reimport
+#   type: kobo
+#   csv_folder: comm-tournees-recharge-reimport
+#   airtable_key: enquetes-commerciales
+#   airtable_options: dryrun
+#   airtable_options: update,add    # no deletion
+#   addons: clients
+
+- name: rs
+  type: sql
+  sql_file: rs.sql
+  airtable_options: add,update    # no deletion (ajout des RS effectuées après le 1/7/2026 uniquement)

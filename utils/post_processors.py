@@ -16,6 +16,15 @@ def remove_none(l: list[str]) -> list[str]:
         l.remove(None)
     return l
 
+_id_counter = {}
+def new_id(id: str) -> str:
+    global _id_counter
+    if id not in _id_counter:
+        _id_counter[id] = 0
+    _id_counter[id] += 1
+    if _id_counter[id] == 1: return id
+    return f"{id} ({_id_counter[id]})"
+
 def remap(df: pd.DataFrame, colname: str, mapper: dict, separator: str = None):
     if separator is None:
         df[colname] = df[colname].apply(lambda a: mapper.get(a, None))
@@ -96,7 +105,22 @@ def kobo_parse_options(df: pd.DataFrame, kobo_key: str) -> pd.DataFrame:
                         df.loc[i, nm_df + "_" + geo_keyword] = gs[j]
     return df
 
-AGENT_MAPPER = {"Bernard": "467","Aimé": "601","Tonganjara": "424","Briel": "619","Anniel": "310","Nicolas": "308","Rama": "589","Angelico": "427","Selson": "624","Tiandray": "438","Romain": "646","Michelin": "439","Sebastien": "314","Arly": "238","Fernandel": "240","Orlando": "622","Chrisley": "592","Karim": "237","Dominique": "600","Barthelemy": "373","Noelson": "315","Flavien": "579","Asto": "604","Lady": "78","Christiano": "441","Ibrahim": "102","Yvon": "575","Sabin": "126","Stephan": "295","Dambel": "618","Elwafa": "593","Hanselme": "316","Pierre": "442","Pierrette": "306","Dieudonné": "321","Sébastien": "314","Ednique": "619","Pascal": "623","Kenny": "242","Roberto": "128","Test": "382","Jean Aimé": "601","Andriatody Jean Aimé": "601","Haja": "295","Elwafa, test": "593","Elwafa test": "593","Aina": "27","Hajalalaina": "587","Sammer": "509","Dullin": "239","Lucas": "119","Aïna": "27","Basilide": "586","Archille": "9","Asni": "518","Jean Cisco": "576","Sanda": "120","Fitiavana": "433","Leo": "495","Stéphan": "295","Anjaratiana": "508","Paul": "606","Jules": "480","Franco": "472","Oliva": "23","Velondrazana": "43","Roméo": "293","Theophile": "34","Stanislas": "313","Guilhem": "580","Arsène": "320","Louis": "309","Lancio": "307","Ferrari": "232","Tony": "305","Stève": "312","Lova": "28","Elodie": "311","Huberto": "296","François": "234"}
+AGENCE_MAPPER = {
+    'Andoharano': 'Andoharano', "Antsirasira": "Andoharano",
+    'Diego': 'Diego',
+    'Sambava': 'Sambava',
+    'Vohémar': 'Vohémar', 'Vohemar': 'Vohémar',
+    'Anivorano': 'Anivorano',
+    'Ambilobe': 'Ambilobe',
+    'Ambanja': 'Ambanja',
+    'Anaborano': 'Anaborano',
+    'Antsohihy': 'Antsohihy'
+}
+
+AGENT_MAPPER = {
+    "Bernard": "467","Aimé": "601","Tonganjara": "424","Briel": "619","Anniel": "310","Nicolas": "308","Rama": "589","Angelico": "427","Selson": "624","Tiandray": "438","Romain": "646","Michelin": "439","Sebastien": "314","Arly": "238","Fernandel": "240","Orlando": "622","Chrisley": "592","Karim": "237","Dominique": "600","Barthelemy": "373","Noelson": "315","Flavien": "579","Asto": "604","Lady": "78","Christiano": "441","Ibrahim": "102","Yvon": "575","Sabin": "126","Stephan": "295","Dambel": "618","Elwafa": "593","Hanselme": "316","Pierre": "442","Pierrette": "306","Dieudonné": "321","Sébastien": "314","Ednique": "619","Pascal": "623","Kenny": "242","Roberto": "128","Test": "382","Jean Aimé": "601","Andriatody Jean Aimé": "601","Haja": "295","Elwafa, test": "593","Elwafa test": "593","Aina": "27","Hajalalaina": "587","Sammer": "509","Dullin": "239","Lucas": "119","Aïna": "27","Basilide": "586","Archille": "9","Asni": "518","Jean Cisco": "576","Sanda": "120","Fitiavana": "433","Leo": "495","Stéphan": "295","Anjaratiana": "508","Paul": "606","Jules": "480","Franco": "472","Oliva": "23","Velondrazana": "43","Roméo": "293","Theophile": "34","Stanislas": "313","Guilhem": "580","Arsène": "320","Louis": "309","Lancio": "307","Ferrari": "232","Tony": "305","Stève": "312","Lova": "28","Elodie": "311","Huberto": "296","François": "234",   # TECH
+    "Martial": "81","Eduvain": "216","Jean Louis": "309","Brindo": "297","Bruton": "127","Maele": "481","Adonis": "230","Francis": "172","Stephane": "31","Stéphane":"31","Olive": "241","Pierre": "442","Nitram": "487","Eliot": "599","Nicolas B.": "308","Sylvain": "598","Stafford": "446","Marice": "648"  # COMM
+}
 
 TEMPS_PANNE_MAPPER = {
     "1 à 3 jours": "1 à 3 jours",
@@ -142,7 +166,7 @@ def process_enquetes_techniques_final(df: pd.DataFrame) -> pd.DataFrame:
     for i, _ in df.iterrows():
         t = 'VST' if 'Visite' in df.loc[i, "type"] else 'CQ'
         d = df.loc[i, 'date']
-        df.loc[i, "id"] = t + '_nr' + df.loc[i, "nr"] + '_' + df.loc[i, 'agent_name'] + '_' + datetime.strftime(d, "%Y-%m-%d")
+        df.loc[i, "id"] = new_id(t + '_nr' + df.loc[i, "nr"] + '_' + df.loc[i, 'agent_name'] + '_' + datetime.strftime(d, "%Y-%m-%d"))
     return df
 
 @post_processor("enquetes-techniques-reimport")
@@ -158,10 +182,10 @@ def process_enquetes_techniques_reimport(df: pd.DataFrame) -> pd.DataFrame:
     df["photo_panne_url"] = df["photo_panne_url"].apply(url_photo)
     return process_enquetes_techniques_final(df)
 
-@post_processor("visites-att")
-def process_visites_att(df: pd.DataFrame) -> pd.DataFrame:
-    df = kobo_parse_options(df, "visites-att")
-    df = kobo_clean_and_map(df, "visites-att")
+@post_processor("tech-visites-att")
+def process_tech_visites_att(df: pd.DataFrame) -> pd.DataFrame:
+    df = kobo_parse_options(df, "tech-visites-att")
+    df = kobo_clean_and_map(df, "tech-visites-att")
     remap(df, "piquage", {'Rien à signaler': "non", 'Piquage constaté': "oui", "Suspicion de piquage (traitement des relèves, taux de rechargement, le client ne laisse pas rentrer...)": "suspicion"})
     remap(df, "panne_a_l_arrivee", {'Il y avait une panne en arrivant sur le NR': "oui", 'Rien à signaler, le NR fonctionne correctement': "non"})
     remap(df, "kit_panneau", { "1 panneau 100W (Kit1)": "Kit 1", "1 panneau 150W (Kit2)": "Kit 2", "2 panneaux 100W -> 200W (Kit3)": "Kit 3", "2 panneaux 150W -> 300W (Kit4)": "Kit 4", "4 panneaux 100W -> 400W": "4 x 100W", "4 panneaux 150W -> 600W": "4 x 150W", "0 panneau installé": "Aucun panneau", "Autre": "Autre" })
@@ -173,11 +197,11 @@ def process_visites_att(df: pd.DataFrame) -> pd.DataFrame:
     df["type"] = "Visite ATT"
     return process_enquetes_techniques_final(df)
 
-@post_processor("controles-qualite")
-def process_controles_qualite(df: pd.DataFrame) -> pd.DataFrame:
-    df = kobo_parse_options(df, "controles-qualite")
-    df = kobo_clean_and_map(df, "controles-qualite")
-    remap(df, "agence", {'Andoharano': 'Andoharano', 'Diego': 'Diego', 'Vohemar': 'Vohémar', 'Anivorano': 'Anivorano', 'Ambilobe': 'Ambilobe', 'Ambanja': 'Ambanja', 'Anaborano': 'Anaborano', 'Antsohihy': 'Antsohihy'})
+@post_processor("tech-controles-qualite")
+def process_tech_controles_qualite(df: pd.DataFrame) -> pd.DataFrame:
+    df = kobo_parse_options(df, "tech-controles-qualite")
+    df = kobo_clean_and_map(df, "tech-controles-qualite")
+    remap(df, "agence", AGENCE_MAPPER)
     remap(df, "motif", {'Contrôle qualité - NR déjà installé': "Contrôle qualité", 'Conformité - Nouvelle installation': "Nouvelle installation"})
     remap(df, "type_controleur", {'Contrôleur V1': 'v1', 'Contrôleur V2': 'v2'})
     remap(df, "kit_panneau", { "1 panneau 100W (Kit1)": "Kit 1", "1 panneau 150W (Kit2)": "Kit 2", "2 panneaux 100W -> 200W (Kit3)": "Kit 3", "2 panneaux 150W -> 300W (Kit4)": "Kit 4", "4 panneaux 100W -> 400W": "4 x 100W", "4 panneaux 150W -> 600W": "4 x 150W", "0 panneau installé": "Aucun panneau", "Autre": "Autre" })
@@ -188,8 +212,96 @@ def process_controles_qualite(df: pd.DataFrame) -> pd.DataFrame:
     df["type"] = "CQ v4"
     return process_enquetes_techniques_final(df)
 
+@post_processor("rs")
+def process_rs(df: pd.DataFrame) -> pd.DataFrame:
+    df["agent"] = df["agent"].astype("Int64").astype("string")
+    df["nr"] = df["nr"].astype("Int64").astype("string")
+    df["date"] = pd.to_datetime(df["date"], utc=True)
+    df["date_releve_precedente"] = pd.to_datetime(df["date_releve_precedente"], utc=True)
+    ouinon(df, ["rs_ok","rtc_ok","sd_ok","heure_ok"])
+    return df
 
-def post_process(key_code: str, df: pd.DataFrame) -> pd.DataFrame:
+def preprocess_enquete_commerciale(df: pd.DataFrame, key: str, clients: dict = {}) -> pd.DataFrame:
+    df["agent_name"] = df["agent"]
+    remap(df, "agent", AGENT_MAPPER)
+    remap(df, "agence", AGENCE_MAPPER)
+    df["agent"] = df["agent"].astype("Int64").astype("string")
+    df["date"] = pd.to_datetime(df["date"], utc=True)
+    df["nr"] = df["nr"].astype("Int64").astype("string")
+    df["n_client"] = df["n_client"].astype("Int64")
+    df["client"] = df["nr"] + df["n_client"].astype("string")
+    remap(df, "client", clients)
+    df["type"] = { "clients-inactifs": "Enquête clients inactifs", "tournees-recharge": "Tournée de recharge" }[key]
+    t = { "clients-inactifs": "ECI", "tournees-recharge": "TDR" }[key]
+    for i, _ in df.iterrows():
+        d = df.loc[i, 'date']
+        df.loc[i, "id"] = new_id(t + '_nr' + df.loc[i, "nr"] + '_c' + str(df.loc[i, "n_client"]) + '_' + df.loc[i, 'agent_name'] + '_' + datetime.strftime(d, "%Y-%m-%d"))
+        if pd.isnull(df.loc[i, 'agent']):
+            if pd.isnull(df.loc[i, "agent_autre"]):
+                df.loc[i, "agent_autre"] = df.loc[i, "agent_name"]
+    if "probleme_nanoe" in df.columns:
+        for i, _ in df.iterrows():
+            probleme_nanoe = df.loc[i, "probleme_nanoe"]
+            if not pd.isnull(probleme_nanoe):
+                probleme_nanoe_normalise = []
+                for key, value in {
+                    "Trop de problèmes": "Trop de problèmes techniques sur l'installation", 
+                    "du client ne marche pas": "Le matériel intérieur (ampoule, TV, congel, USB...) du client ne marche pas",
+                    "ne suffit pas": "Le matériel intérieur (ampoule, TV, congel, USB...) ne suffit pas",
+                    "retards sur les dépannages": "Trop de retards sur les dépannages",
+                    "comportement du NE": "Problème de comportement du NE",
+                    "Prix": "Prix trop élevé",
+                    "Autre": "Autre"
+                }.items():
+                    if key in probleme_nanoe:
+                        probleme_nanoe_normalise.append(value.replace(',', ';'))
+                    df.loc[i, "probleme_nanoe"] = ','.join(probleme_nanoe_normalise)
+    df.drop(columns=["agent_name"], inplace=True)
+    return df
+
+@post_processor("comm-clients-inactifs")
+def process_comm_clients_inactifs(df: pd.DataFrame, clients: dict = {}) -> pd.DataFrame:
+    df = kobo_parse_options(df, "comm-clients-inactifs")
+    df = kobo_clean_and_map(df, "comm-clients-inactifs")
+    df = preprocess_enquete_commerciale(df, "clients-inactifs", clients)
+    df["deplacement_client_nr"] = df["deplacement_client_nr"].astype("Int64").astype("string")
+    remap(df, "situation_client", {"Le client est complètement inactif": "client inactif","Le client consomme peu": "client presque inactif","C'est un client fantôme": "client fantôme","Le client fait du piquage": "client piqueur","Le client a déménagé": "client a déménagé","Le client est décédé": "client décédé","Le client est déjà déraccordé": "client déraccordé"})
+    remap(df, "nouveau_forfait_souhaite", {"Non": "aucun","Oui (Eco)": "Eco","Oui (Eclairage)": "Eclairage","Oui (Eclairage +)": "Eclairage +","Oui (Multimedia)": "Multimedia","Oui (Multimedia +)": "Multimedia +"})
+    ouinon(df, ["client_veut_etre_deraccorde","dernier_client_actif_sur_nr","nouveau_client_potentiel","demenagement_client_interesse"])
+    df["deplacement_client_nr"] = df["deplacement_client_nr"].astype("Int64").apply(lambda x: None if x == 0 else x).astype("string")
+    return df
+
+@post_processor("comm-clients-inactifs-reimport")
+def process_comm_clients_inactifs(df: pd.DataFrame, clients: dict = {}) -> pd.DataFrame:
+    df["agent_autre"] = df["agent"]
+    for i, _ in df.iterrows():
+        causes_inactivite = df.loc[i, "causes_inactivite"]
+        if not pd.isnull(causes_inactivite):
+            causes_inactivite = ','.join(causes_inactivite.split(', '))
+    df = preprocess_enquete_commerciale(df, "clients-inactifs", clients)
+    remap(df, "situation_client", {"Le client est complètement inactif": "client inactif","Le client consomme peu": "client presque inactif","C'est un client fantôme": "client fantôme","Le client fait du piquage": "client piqueur","Le client a déménagé": "client a déménagé","Le client est décédé": "client décédé","Le client est déjà déraccordé": "client déraccordé"})
+    remap(df, "nouveau_forfait_souhaite", {"Non": "aucun","Oui (Eco)": "Eco","Oui (Eclairage)": "Eclairage","Oui (Eclairage +)": "Eclairage +","Oui (Multimedia)": "Multimedia","Oui (Multimedia +)": "Multimedia +"})
+    ouinon(df, ["client_veut_etre_deraccorde","dernier_client_actif_sur_nr","nouveau_client_potentiel","demenagement_client_interesse"])
+    df["deplacement_client_nr"] = df["deplacement_client_nr"].astype("Int64").astype("string")
+    df["deplacement_client_nr"] = df["deplacement_client_nr"].astype("Int64").apply(lambda x: None if x == 0 else x).astype("string")
+    return df
+
+@post_processor("comm-tournees-recharge")
+def process_comm_tournees_recharge(df: pd.DataFrame, clients: dict = {}) -> pd.DataFrame:
+    df = kobo_parse_options(df, "comm-tournees-recharge")
+    df = kobo_clean_and_map(df, "comm-tournees-recharge")
+    df = preprocess_enquete_commerciale(df, "tournees-recharge", clients)
+    ouinon(df, ["presence_client","credit_client_disponible_avant_passage","recharge_client_effectuee","probleme_commercial_6_mois","probleme_technique_6_mois","probleme_commercial_6_mois_resolu","a_evoquer_en_reunion_equipe","rs_effectuee","client_avec_coffre","presence_cadenas","piquage"])
+    return df
+
+@post_processor("comm-tournees-recharge-reimport")
+def process_comm_tournees_recharge(df: pd.DataFrame, clients: dict = {}) -> pd.DataFrame:
+    df["agent_autre"] = df["agent"]
+    df = preprocess_enquete_commerciale(df, "tournees-recharge", clients)
+    ouinon(df, ["presence_client","credit_client_disponible_avant_passage","recharge_client_effectuee","probleme_commercial_6_mois","probleme_technique_6_mois","probleme_commercial_6_mois_resolu","a_evoquer_en_reunion_equipe","rs_effectuee","client_avec_coffre","presence_cadenas","piquage"])
+    return df
+
+def post_process(key_code: str, df: pd.DataFrame, addons: dict = {}) -> pd.DataFrame:
     fn = POST_PROCESSORS.get(key_code)
     if fn is None: return df
-    return fn(df)
+    return fn(df, **addons)

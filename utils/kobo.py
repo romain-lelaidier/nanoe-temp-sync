@@ -29,7 +29,7 @@ class KoboFetcher:
         return pd.json_normalize(rows)
 
     def fetch_from_csv(self, csv_folder: str) -> pd.DataFrame:
-        columns_mapper_file = open(f"{Path(__file__).parent.parent}/kobos/{csv_folder}/columns_mapper.csv", "r").read()
+        columns_mapper_file = open(f"{Path(__file__).parent.parent}/kobos/{csv_folder}/mapper.csv", "r").read()
         columns_mapper = {}
         for line in columns_mapper_file.split('\n'):
             c1, c2 = line.split(',')

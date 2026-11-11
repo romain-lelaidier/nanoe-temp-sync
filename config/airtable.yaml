@@ -57,6 +57,7 @@ tables:
 
   - key: enquetes-techniques
     id: tblMjqreKmznMKSn8
+    primary_key: id
     fields:
       - fld9iDnT6FR4xSSaL:id
       - fldZvbEDy7jezPFWl:last_sync
@@ -134,3 +135,67 @@ tables:
       - flda6WUwcIfUkJFrS:note_cq
       - fld4sOxEXGM2xoypI:commentaire_general
       - fldsPu9SbK7B7Rsvj:erreur
+
+  - key: rs
+    id: tblseHSeArjEXCxci
+    primary_key: id
+    fields:
+    - fldn82V4O2OqS7iL6:id
+    - fldxn63xy5bE9cCtj:nr
+    - fldjgaa61zI4ooiYG:agent
+    - fldl3XYBqtOS3SI4a:date
+    - fldNBGOfEPIZHeqPO:date_releve_precedente
+    - fldEcQt5VNZvbpA7d:rs_ok
+    - fldScf9eneEnnLWS1:rtc_ok
+    - flduXext5upNvYKjq:sd_ok
+    - fldiTeU5GLo9fqzQG:heure_ok
+    - fldj1OXBgINsVjuyC:difference_heure
+    - fldyzdyyiaCLXTHrw:nb_demarrages_anormaux
+    - fldezNhbQa3P8NpsB:t_min
+    - fldLbsRLEGM8WndSj:t_max
+
+  - key: enquetes-commerciales
+    id: tblB2oTRu0OUKrHcQ
+    primary_key: id
+    fields:
+    - fldrxBLLU0oLSDKrv:id
+    - fldwvcgAYg37TAc1L:last_sync
+    - fldw4vsOZ0luo6kFr:type
+    - fldbZYB6B50q2uLbN:date
+    - fldvy4g06qEFRtDRb:agence
+    - fld3DgBAlniSNr4Jk:agent
+    - fldXRbimeqzLDDmx2:agent_autre
+    - fldTqTFihVm2x7Vrs:nr
+    - fldECMBR9ahh2iRQl:client
+    - fldfXFze6VclzKD81:n_client
+    - fld7rbT032t95T7O3:presence_client
+    - fld7dkqyDA7JetuAZ:credit_client_disponible_avant_passage
+    - fldoPgHZX9uwxWe1V:recharge_client_effectuee
+    - fldaDXuhE3JCYUsjz:satisfaction_client
+    - flddbIOrlwK5e9EYK:ne_reactif
+    - fldrBsJxQr8vCLk26:frequence_passage_ne
+    - fldNQlndpSLL7imVE:materiel_insatisfaisant
+    - fldBE8pVOcscSclTu:materiel_insatisfaisant_autre
+    - fldJKIshT03CEJ05f:probleme_commercial_6_mois
+    - fldvnf5lyQyIwppAN:probleme_commercial_6_mois_detail
+    - fldZHU77eDpBLTdhC:probleme_commercial_6_mois_resolu
+    - fldFZRHwgPzVAQvrA:probleme_technique_6_mois
+    - fldmOP1ZV2MZ6nFgE:a_evoquer_en_reunion_equipe
+    - fldP7oQ45u4ltWuif:rs_effectuee
+    - fldlmxnme9mYKjQXe:client_avec_coffre
+    - flduN1LY9339zw1Xp:presence_cadenas
+    - fldmCsIN6En7aioFq:piquage
+    - fldKEqg9I0cxqdMOM:situation_client
+    - fldvkngCO2dDFA5tW:nouveau_forfait_souhaite
+    - fldUUlk4PWkL310HW:demenagement_client_interesse
+    - fldafrwP1TGgO4JMG:causes_inactivite
+    - fldy4rGNUlD5qTBnj:causes_inactivite_autre
+    - fld16X4yhGyHJqJbq:retour_argent_client
+    - fldsnl8zU5OW5GwHd:probleme_nanoe
+    - fldMLsfIu3IM1Dn4h:probleme_nanoe_autre
+    - fldrhcxCK19K5CQk8:client_veut_etre_deraccorde
+    - flds9Ew14xDdSL862:suggestion_staff
+    - fldYJQcs1zAvezti5:nouveau_client_potentiel
+    - fldBnsrfXmZw75sxq:dernier_client_actif_sur_nr
+    - fldFuRURkLJ9GIX5a:deplacement_client_nr
+    - fldnaDv7wpJW9gSHO:commentaire
