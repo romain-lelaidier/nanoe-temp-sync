@@ -19,7 +19,6 @@ def export_as_csv(key: str, df: pd.DataFrame):
         os.mkdir(config.EXPORT_DIR)
     folder = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
     path = f"{config.EXPORT_DIR}/{folder}"
-    logger.info("Exporting to csv (%s)", path)
     if not os.path.exists(path):
         os.mkdir(path)
     df.to_csv(f"{path}/{key}.csv")
