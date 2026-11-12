@@ -110,15 +110,15 @@ def kobo_parse_options(df: pd.DataFrame, kobo_key: str) -> pd.DataFrame:
     return df
 
 AGENCE_MAPPER = {
+    'Ambanja': 'Ambanja',
     'Andoharano': 'Andoharano', "Antsirasira": "Andoharano",
-    'Diego': 'Diego',
+    'Ambilobe': 'Ambilobe',
+    'Anaborano': 'Anaborano',
+    'Antsohihy': 'Antsohihy',
+    'Diego': 'Diego-Suarez', 'Diego-Suarez': 'Diego-Suarez',
+    'Anivorano': 'Anivorano',
     'Sambava': 'Sambava',
     'Vohémar': 'Vohémar', 'Vohemar': 'Vohémar',
-    'Anivorano': 'Anivorano',
-    'Ambilobe': 'Ambilobe',
-    'Ambanja': 'Ambanja',
-    'Anaborano': 'Anaborano',
-    'Antsohihy': 'Antsohihy'
 }
 
 AGENT_MAPPER = {
@@ -307,5 +307,6 @@ def process_comm_tournees_recharge(df: pd.DataFrame, clients: dict = {}) -> pd.D
 
 def post_process(key_code: str, df: pd.DataFrame, addons: dict = {}) -> pd.DataFrame:
     fn = POST_PROCESSORS.get(key_code)
-    if fn is None: return df
-    return fn(df, **addons)
+    df = df if fn is None else fn(df, **addons)
+    if "agence" in df.columns: remap(df, "agence", AGENCE_MAPPER)
+    return df
