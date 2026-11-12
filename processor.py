@@ -8,7 +8,7 @@ from utils.sql import get_sql_fetcher
 from utils.kobo import get_kobo_fetcher
 from utils.airtable.sync_engine import get_airtable_sync_engine
 from utils.airtable.config import get_airtable_config
-from utils.post_processors import post_process
+from utils.post_processors import post_process, reset_id_counter
 from utils.addons import addon, get_addons
 
 def export_as_csv(key: str, df: pd.DataFrame):
@@ -48,6 +48,7 @@ def run_airtable_full_sync():
     errors = {}
     airtable_config = get_airtable_config()
     airtable_sync_engine = get_airtable_sync_engine()
+    reset_id_counter()
 
     # 1. téléchargement et traitement
     for source in yaml_load_config("sources"):

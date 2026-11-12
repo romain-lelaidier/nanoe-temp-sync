@@ -25,6 +25,10 @@ def new_id(id: str) -> str:
     if _id_counter[id] == 1: return id
     return f"{id} ({_id_counter[id]})"
 
+def reset_id_counter():
+    global _id_counter
+    _id_counter = {}
+
 def remap(df: pd.DataFrame, colname: str, mapper: dict, separator: str = None):
     if separator is None:
         df[colname] = df[colname].apply(lambda a: mapper.get(a, None))
