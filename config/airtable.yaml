@@ -55,6 +55,10 @@ tables:
       - fldIv8k3Fl4dahqws:nr
       - fld2C2cczXaJB6OSd:date_raccordement
       - flddPvgHWNuagAITP:forfait
+      - fldYVZMiLtEtLT22V:tr3m_0
+      - fldbRpHLMhtQP3up3:tr3m_1
+      - fld9qrrMEptzwe2rT:tr3m_2
+      - fldk5yxln8G1FmHRc:tr3m_3
 
   - key: enquetes-techniques
     id: tblMjqreKmznMKSn8

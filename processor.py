@@ -41,6 +41,10 @@ def addon_clients() -> dict:
             clients_mapper[str(int(n_client))] = str(int(n))
     return clients_mapper
 
+@addon("transactions")
+def addon_transactions() -> pd.DataFrame:
+    return FETCHERS["sql"]().fetch({ "sql_file": "addons/transactions.sql" })
+
 def run_airtable_full_sync():
     global data_to_export
 

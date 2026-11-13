@@ -1,5 +1,5 @@
 import pandas as pd
-from datetime import datetime
+import datetime
 from pathlib import Path
 import re
 
@@ -10,6 +10,12 @@ def post_processor(key_code: str):
         POST_PROCESSORS[key_code] = fn
         return fn
     return deco
+
+def post_process(key_code: str, df: pd.DataFrame, addons: dict = {}) -> pd.DataFrame:
+    fn = POST_PROCESSORS.get(key_code)
+    df = df if fn is None else fn(df, **addons)
+    if "agence" in df.columns: remap(df, "agence", AGENCE_MAPPER)
+    return df
 
 def remove_none(l: list[str]) -> list[str]:
     while None in l:
@@ -170,7 +176,7 @@ def process_enquetes_techniques_final(df: pd.DataFrame) -> pd.DataFrame:
     for i, _ in df.iterrows():
         t = 'VST' if 'Visite' in df.loc[i, "type"] else 'CQ'
         d = df.loc[i, 'date']
-        df.loc[i, "id"] = new_id(t + '_nr' + df.loc[i, "nr"] + '_' + df.loc[i, 'agent_name'] + '_' + datetime.strftime(d, "%Y-%m-%d"))
+        df.loc[i, "id"] = new_id(t + '_nr' + df.loc[i, "nr"] + '_' + df.loc[i, 'agent_name'] + '_' + datetime.datetime.strftime(d, "%Y-%m-%d"))
     return df
 
 @post_processor("enquetes-techniques-reimport")
@@ -239,7 +245,7 @@ def preprocess_enquete_commerciale(df: pd.DataFrame, key: str, clients: dict = {
     t = { "clients-inactifs": "ECI", "tournees-recharge": "TDR" }[key]
     for i, _ in df.iterrows():
         d = df.loc[i, 'date']
-        df.loc[i, "id"] = new_id(t + '_nr' + df.loc[i, "nr"] + '_c' + str(df.loc[i, "n_client"]) + '_' + df.loc[i, 'agent_name'] + '_' + datetime.strftime(d, "%Y-%m-%d"))
+        df.loc[i, "id"] = new_id(t + '_nr' + df.loc[i, "nr"] + '_c' + str(df.loc[i, "n_client"]) + '_' + df.loc[i, 'agent_name'] + '_' + datetime.datetime.strftime(d, "%Y-%m-%d"))
         if pd.isnull(df.loc[i, 'agent']):
             if pd.isnull(df.loc[i, "agent_autre"]):
                 df.loc[i, "agent_autre"] = df.loc[i, "agent_name"]
@@ -305,8 +311,41 @@ def process_comm_tournees_recharge(df: pd.DataFrame, clients: dict = {}) -> pd.D
     ouinon(df, ["presence_client","credit_client_disponible_avant_passage","recharge_client_effectuee","probleme_commercial_6_mois","probleme_technique_6_mois","probleme_commercial_6_mois_resolu","a_evoquer_en_reunion_equipe","rs_effectuee","client_avec_coffre","presence_cadenas","piquage"])
     return df
 
-def post_process(key_code: str, df: pd.DataFrame, addons: dict = {}) -> pd.DataFrame:
-    fn = POST_PROCESSORS.get(key_code)
-    df = df if fn is None else fn(df, **addons)
-    if "agence" in df.columns: remap(df, "agence", AGENCE_MAPPER)
-    return df
+@post_processor("prospect")
+def process_prospects(df_c: pd.DataFrame, transactions: pd.DataFrame) -> pd.DataFrame:
+    def union_segments_df(df):
+        df = df.sort_values(["debut", "fin"])
+        # fusion glissante vectorisée : nouveau segment quand debut > fin courant
+        fin = df["fin"].cummax()
+        nouveau = df["debut"] > fin.shift(fill_value=-float("inf"))
+        groupe = nouveau.cumsum()
+        return (df.assign(fin=fin)
+                .groupby(groupe)
+                .agg(debut=("debut", "first"), fin=("fin", "max"))
+                .reset_index(drop=True))
+    def intersection_segments(df, a, b):
+        """
+        Arguments:
+            df : DataFrame avec colonnes debut, fin (segments [debut, fin[, potentiellement intersectés).
+            a, b : bornes du segment requête [a, b[.
+        Retourne la longueur totale de l'intersection des segments de df avec [a, b[."""
+        out = df[(df["debut"] > a) & (df["fin"] < b)].copy()
+        out["debut"] = out["debut"].clip(lower=a)
+        out["fin"] = out["fin"].clip(upper=b)
+        return (out["fin"] - out["debut"]).sum()
+
+    ajd = (datetime.date.today() - datetime.date(1970, 1, 1)).days
+    plages = {
+        "tr3m_0": (ajd-92*(0+1), ajd-92*0),
+        "tr3m_1": (ajd-92*(1+1), ajd-92*1),
+        "tr3m_2": (ajd-92*(2+1), ajd-92*2),
+        "tr3m_3": (ajd-92*(3+1), ajd-92*3),
+    }
+
+    for i, _ in df_c.iterrows():
+        df_ct = transactions[transactions['id_client'] == df_c.loc[i, 'n']]
+        df_ct = union_segments_df(df_ct)
+        for key, (a, b) in plages.items():
+            df_c.loc[i, key] = intersection_segments(df_ct, a, b) / (b - a)
+
+    return df_c

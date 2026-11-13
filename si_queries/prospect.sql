@@ -9,9 +9,12 @@ select
     c.localization_lat as latitude,
     c.localization_long as longitude,
     nr.name as nr,
-    c.date_join_network as date_raccordement
+    c.date_join_network as date_raccordement,
+    o.title as forfait
 from customer c
 left join zone z
     on z.id = c.zone
 left join network nr
     on nr.id = c.network_id
+left join offers o
+    on o.id = c.offer
