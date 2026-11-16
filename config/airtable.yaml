@@ -59,6 +59,8 @@ tables:
       - fldbRpHLMhtQP3up3:tr3m_1
       - fld9qrrMEptzwe2rT:tr3m_2
       - fldk5yxln8G1FmHRc:tr3m_3
+      - fld8v8BtU6M97Jw1U:derniere_transaction_date
+      - fldVhQXBVliHUKxtw:derniere_transaction_duree_jours
 
   - key: enquetes-techniques
     id: tblMjqreKmznMKSn8

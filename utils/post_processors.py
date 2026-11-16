@@ -344,8 +344,14 @@ def process_prospects(df_c: pd.DataFrame, transactions: pd.DataFrame) -> pd.Data
 
     for i, _ in df_c.iterrows():
         df_ct = transactions[transactions['id_client'] == df_c.loc[i, 'n']]
-        df_ct = union_segments_df(df_ct)
-        for key, (a, b) in plages.items():
-            df_c.loc[i, key] = intersection_segments(df_ct, a, b) / (b - a)
+        if len(df_ct) > 0:
+            df_ct = df_ct.sort_values(["debut", "fin"])
+            derniere_transaction_debut = int(df_ct["debut"].iloc[-1])
+            derniere_transaction_fin = int(df_ct["fin"].iloc[-1])
+            df_c.loc[i, 'derniere_transaction_date'] = datetime.datetime(1970, 1, 1) + datetime.timedelta(derniere_transaction_debut)
+            df_c.loc[i, 'derniere_transaction_duree_jours'] = derniere_transaction_fin - derniere_transaction_debut
+            df_ct = union_segments_df(df_ct)
+            for key, (a, b) in plages.items():
+                df_c.loc[i, key] = intersection_segments(df_ct, a, b) / (b - a)
 
     return df_c

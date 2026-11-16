@@ -1,3 +1,6 @@
+from utils.logger import get_logger
+
+logger = get_logger("addons")
 
 _addons_fns = {}
 def addon(addon_code: str):
@@ -12,7 +15,9 @@ def get_addon(addon_code: str):
     global _addons
     if addon_code not in _addons:
         fn = _addons_fns.get(addon_code)
-        if fn is not None: _addons[addon_code] = fn()
+        if fn is not None:
+            logger.info("Getting addon '%s'", addon_code)
+            _addons[addon_code] = fn()
     return _addons.get(addon_code, None)
 
 def get_addons(source: dict) -> dict:
