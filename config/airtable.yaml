@@ -37,6 +37,13 @@ tables:
       - fldedBmFjpvkSeXeH:ne
       - fldjUI9MwJ2YEks6o:zone
       - fldqJyBUEkm7r30Hh:agence
+      - fldc5bvbAAOft368V:cryptage
+      - fldrdha5wXCYInBLd:date_mes
+      - fldUA7I9wgRf0vQxD:cout_total
+      - fldTkBcqBr7KZWJMK:latitude
+      - fld5iOBsd0uZ4ryqZ:longitude
+      - fld9h3uiyUcBF6X5S:puissance
+      - fldK3dLtBfxPDDBua:materiel
 
   - key: prospect
     id: tblBYRl9ASOkB7aDY

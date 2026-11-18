@@ -127,7 +127,6 @@ class AirtableClient:
         """
         try:
             deleted = table.batch_delete(record_ids)
-            logger.info(f"Enregistrements supprimes: {len(deleted)}")
             return deleted
         
         except Exception as e:
