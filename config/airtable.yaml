@@ -61,19 +61,25 @@ tables:
       - fldIv8k3Fl4dahqws:nr
       - fld2C2cczXaJB6OSd:date_raccordement
       - flddPvgHWNuagAITP:forfait
-      - fldYVZMiLtEtLT22V:tr3m_0
-      - fldbRpHLMhtQP3up3:tr3m_1
-      - fld9qrrMEptzwe2rT:tr3m_2
-      - fldk5yxln8G1FmHRc:tr3m_3
+      - fldsEv53ZTjt2hE4B:tr_m0
+      - fldPyS2edbbS3F14W:tr_m1
+      - fldn8ANXdO3I2fhzZ:tr_m2
+      - fldBVRg6oscKeFXsR:tr_m3
+      - fldYVZMiLtEtLT22V:tr_t0
+      - fldbRpHLMhtQP3up3:tr_t1
+      - fld9qrrMEptzwe2rT:tr_t2
+      - fldk5yxln8G1FmHRc:tr_t3
       - fld8v8BtU6M97Jw1U:derniere_transaction_date
       - fldVhQXBVliHUKxtw:derniere_transaction_duree_jours
-      - fldB5JYD8aBcH4fFI:revenu_m_0
-      - fldBkz2EUFmtErmcL:revenu_m_1
-      - fldP94k93Za4meBlb:revenu_m_12
-      - fldXGwwqYVeW6AAQi:revenu_s_0
-      - fldjO70JNy9NpVG35:revenu_s_1
-      - fldn4Tuuln2kXh1wq:revenu_s_2
-      - fld71hM9g1hAYiudW:revenu_s_3
+      - fldB5JYD8aBcH4fFI:revenu_m0
+      - fldBkz2EUFmtErmcL:revenu_m1
+      - fldy48bKc5lQ1Hxgx:revenu_m2
+      - fldLND5qkp8cSG7sU:revenu_m3
+      - fldP94k93Za4meBlb:revenu_m12
+      - fldXGwwqYVeW6AAQi:revenu_s0
+      - fldjO70JNy9NpVG35:revenu_s1
+      - fldn4Tuuln2kXh1wq:revenu_s2
+      - fld71hM9g1hAYiudW:revenu_s3
       - fldlLrWiiZI9p7GD6:revenu_total
 
   - key: enquetes-techniques

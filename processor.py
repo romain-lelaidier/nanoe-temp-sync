@@ -69,10 +69,14 @@ def addon_tr() -> pd.DataFrame:
 
     ajd = (date.today() - date(1970, 1, 1)).days
     plages = {
-        "tr3m_0": (ajd-92*(0+1), ajd-92*0),
-        "tr3m_1": (ajd-92*(1+1), ajd-92*1),
-        "tr3m_2": (ajd-92*(2+1), ajd-92*2),
-        "tr3m_3": (ajd-92*(3+1), ajd-92*3),
+        "tr_t0": (ajd-92*(0+1), ajd-92*0),  # trimestre T-0
+        "tr_t1": (ajd-92*(1+1), ajd-92*1),  # trimestre T-1
+        "tr_t2": (ajd-92*(2+1), ajd-92*2),  # trimestre T-2
+        "tr_t3": (ajd-92*(3+1), ajd-92*3),  # trimestre T-3
+        "tr_m0": (ajd-30*(0+1), ajd-30*0),  # mois M-0
+        "tr_m1": (ajd-30*(1+1), ajd-30*1),  # mois M-1
+        "tr_m2": (ajd-30*(2+1), ajd-30*2),  # mois M-2
+        "tr_m3": (ajd-30*(3+1), ajd-30*3),  # mois M-3
     }
 
     transactions = FETCHERS["sql"]().fetch({ "sql_file": "addons/tr.sql" })
@@ -101,14 +105,15 @@ def addon_revenus() -> pd.DataFrame:
             return df_ct[(df_ct['debut'] > a) & (df_ct['debut'] <= b)]['montant'].sum()
         if len(df_ct) > 0:
             df_c.loc[i, "revenu_total"] = revenus(-np.inf, ajd)
-            df_c.loc[i, "revenu_s_0"]   = revenus(ajd-92*2, ajd-92*0)       # semestre S
-            df_c.loc[i, "revenu_s_1"]   = revenus(ajd-92*4, ajd-92*2)       # semestre S-1
-            df_c.loc[i, "revenu_s_2"]   = revenus(ajd-92*6, ajd-92*4)       # semestre S-2
-            df_c.loc[i, "revenu_s_3"]   = revenus(ajd-92*8, ajd-92*6)       # semestre S-3
-            df_c.loc[i, "revenu_m_0"]   = revenus(ajd-30, ajd)              # mois M
-            df_c.loc[i, "revenu_m_1"]   = revenus(ajd-60, ajd-30)           # mois M-1
-            df_c.loc[i, "revenu_m_12"]  = revenus(ajd-92*8-30, ajd-92*8)    # mois M-12
-    print(df_c)
+            df_c.loc[i, "revenu_s0"]    = revenus(ajd-92*2, ajd-92*0)       # semestre S-0
+            df_c.loc[i, "revenu_s1"]    = revenus(ajd-92*4, ajd-92*2)       # semestre S-1
+            df_c.loc[i, "revenu_s2"]    = revenus(ajd-92*6, ajd-92*4)       # semestre S-2
+            df_c.loc[i, "revenu_s3"]    = revenus(ajd-92*8, ajd-92*6)       # semestre S-3
+            df_c.loc[i, "revenu_m0"]    = revenus(ajd-30*(0+1), ajd-30*0)   # mois M-0
+            df_c.loc[i, "revenu_m1"]    = revenus(ajd-30*(1+1), ajd-30*1)   # mois M-1
+            df_c.loc[i, "revenu_m2"]    = revenus(ajd-30*(2+1), ajd-30*2)   # mois M-2
+            df_c.loc[i, "revenu_m3"]    = revenus(ajd-30*(3+1), ajd-30*3)   # mois M-2
+            df_c.loc[i, "revenu_m12"]   = revenus(ajd-92*8-30, ajd-92*8)    # mois M-12
     return df_c
 
 
@@ -150,19 +155,17 @@ def run_airtable_full_sync():
         except Exception:
             logger.exception("Source '%s' failed", s_name)  # keeps traceback
             errors[s_name] = True
+            continue
 
-    # 2. export csv + airtable
-    for s_name, entry in data_to_export.items():
-        data = entry["data"]
-        table_key = entry["table_key"]
+        # 2. export csv + airtable
         try:
             export_as_csv(s_name, data)
             logger.info("Uploading to Airtable: table '%s' (%i rows)", table_key, len(data))
-            airtable_sync_engine.sync_dataframe(table_key, data, entry["airtable_options"])
+            airtable_sync_engine.sync_dataframe(table_key, data, source.get("airtable_options"))
         except Exception:
             logger.exception("Synchronization '%s' failed", s_name)
             errors[s_name] = True
-
+    
 if __name__ == "__main__":
     # processor lancé par command-line directement
     config = ServiceConfig()

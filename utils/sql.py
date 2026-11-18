@@ -1,10 +1,11 @@
 import pandas as pd
 from pathlib import Path
 from typing import Optional
-import psycopg2
 from sshtunnel import SSHTunnelForwarder
 from typing import Optional
 from contextlib import contextmanager
+import sqlalchemy
+import logging
 
 from utils.config import ServiceConfig
 from utils.logger import get_logger
@@ -17,7 +18,8 @@ class DatabaseConnection:
     
     def __init__(self):
         self.tunnel: Optional[SSHTunnelForwarder] = None
-        self.connection: Optional[psycopg2.extensions.connection] = None
+        self.connection: Optional[sqlalchemy.Engine] = None
+        get_logger("paramiko.transport").setLevel(logging.NOTSET)
     
     def start_ssh_tunnel(self) -> SSHTunnelForwarder:
         """
@@ -52,7 +54,7 @@ class DatabaseConnection:
             self.tunnel.stop()
             self.tunnel = None
     
-    def connect(self) -> psycopg2.extensions.connection:
+    def connect(self) -> sqlalchemy.Engine:
         """
         Etablit la connexion a PostgreSQL via le tunnel SSH
         
@@ -64,13 +66,15 @@ class DatabaseConnection:
         
         try:
             config = ServiceConfig()
-            self.connection = psycopg2.connect(
-                host='127.0.0.1',
+            url = sqlalchemy.engine.URL.create(
+                drivername="postgresql+psycopg2",
+                username=config.DB_SQL_USERNAME,
+                password=config.DB_SQL_PASSWORD,
+                host="127.0.0.1",
                 port=self.tunnel.local_bind_port,
                 database=config.DB_SQL_NAME,
-                user=config.DB_SQL_USERNAME,
-                password=config.DB_SQL_PASSWORD
             )
+            self.connection = sqlalchemy.create_engine(url)
             return self.connection
         
         except Exception as e:
