@@ -24,7 +24,7 @@ materiel as (
 select
     cast(nr.name as int) as n,
     case
-	    when string_agg(distinct nr.status, ',') like '%network%' then 'network'
+	    when string_agg(distinct nr.status, ',') like '%%network%%' then 'network'
 	    else 'project'
 	end as statut,
     string_agg(distinct cast(ne.owner as varchar), ',') as ne,
