@@ -14,7 +14,6 @@ tables:
       - fldCv8xZq7qCdXx0A:agence
       - fldmjU29OQyot3mAT:telephone
       - fldprzR92urRqSNEc:telephone_flotte
-      # - fldIj0glZPIHhKhzw:is_ne
       - fldtHLr8w5ndBRIPZ:roles
 
   - key: zone
@@ -68,6 +67,14 @@ tables:
       - fldk5yxln8G1FmHRc:tr3m_3
       - fld8v8BtU6M97Jw1U:derniere_transaction_date
       - fldVhQXBVliHUKxtw:derniere_transaction_duree_jours
+      - fldB5JYD8aBcH4fFI:revenu_m_0
+      - fldBkz2EUFmtErmcL:revenu_m_1
+      - fldP94k93Za4meBlb:revenu_m_12
+      - fldXGwwqYVeW6AAQi:revenu_s_0
+      - fldjO70JNy9NpVG35:revenu_s_1
+      - fldn4Tuuln2kXh1wq:revenu_s_2
+      - fld71hM9g1hAYiudW:revenu_s_3
+      - fldlLrWiiZI9p7GD6:revenu_total
 
   - key: enquetes-techniques
     id: tblMjqreKmznMKSn8

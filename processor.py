@@ -1,6 +1,7 @@
+import numpy as np
 import pandas as pd
 import os
-from datetime import datetime
+from datetime import datetime, date, timedelta
 
 from utils.config import ServiceConfig, yaml_load_config
 from utils.logger import setup_logger, get_logger
@@ -41,9 +42,75 @@ def addon_clients() -> dict:
             clients_mapper[str(int(n_client))] = str(int(n))
     return clients_mapper
 
-@addon("transactions")
-def addon_transactions() -> pd.DataFrame:
-    return FETCHERS["sql"]().fetch({ "sql_file": "addons/transactions.sql" })
+@addon("tr")
+def addon_tr() -> pd.DataFrame:
+    def union_decalee_df(df):
+        # Segments ]debut, fin] triés. Si un segment commence avant la fin du précédent (décalé), il est repoussé juste après lui, en conservant sa longueur.
+        # Exemple : ]1,5] puis ]3,7] -> ]1,5] puis ]5,9]
+        df = df.sort_values(["debut", "fin"])
+        debuts, fins = [], []
+        fin_prec = -float("inf")
+        for d, f in zip(df["debut"], df["fin"]):
+            d2 = max(int(d), fin_prec)
+            fin_prec = d2 + (int(f) - int(d))
+            debuts.append(d2)
+            fins.append(fin_prec)
+        return pd.DataFrame({"debut": debuts, "fin": fins})
+    def longueur_intersection(df, a, b):
+        """
+        Arguments:
+            df : DataFrame avec colonnes debut, fin (segments ]debut, fin], sans intersection).
+            a, b : bornes du segment requête ]a, b].
+        Retourne la longueur totale de l'intersection des segments de df avec ]a, b]."""
+        out = df[(df["debut"] < b) & (df["fin"] > a)].copy()
+        out["debut"] = out["debut"].clip(lower=a)
+        out["fin"] = out["fin"].clip(upper=b)
+        return (out["fin"] - out["debut"]).sum()
+
+    ajd = (date.today() - date(1970, 1, 1)).days
+    plages = {
+        "tr3m_0": (ajd-92*(0+1), ajd-92*0),
+        "tr3m_1": (ajd-92*(1+1), ajd-92*1),
+        "tr3m_2": (ajd-92*(2+1), ajd-92*2),
+        "tr3m_3": (ajd-92*(3+1), ajd-92*3),
+    }
+
+    transactions = FETCHERS["sql"]().fetch({ "sql_file": "addons/tr.sql" })
+    df_c = pd.DataFrame([ { 'n': id_client } for id_client in transactions['id_client'].unique() ])
+    for i, _ in df_c.iterrows():
+        df_ct = transactions[transactions['id_client'] == df_c.loc[i, 'n']]
+        if len(df_ct) > 0:
+            df_ct = df_ct.sort_values(["debut", "fin"])
+            derniere_transaction_debut = int(df_ct["debut"].iloc[-1])
+            derniere_transaction_fin = int(df_ct["fin"].iloc[-1])
+            df_c.loc[i, 'derniere_transaction_date'] = datetime(1970, 1, 1) + timedelta(derniere_transaction_debut)
+            df_c.loc[i, 'derniere_transaction_duree_jours'] = derniere_transaction_fin - derniere_transaction_debut
+            df_ct = union_decalee_df(df_ct)
+            for key, (a, b) in plages.items():
+                df_c.loc[i, key] = longueur_intersection(df_ct, a, b) / (b - a)
+    return df_c
+
+@addon("revenus")
+def addon_revenus() -> pd.DataFrame:
+    ajd = (date.today() - date(1970, 1, 1)).days
+    transactions = FETCHERS["sql"]().fetch({ "sql_file": "addons/revenus.sql" })
+    df_c = pd.DataFrame([ { 'n': id_client } for id_client in transactions['id_client'].unique() ])
+    for i, _ in df_c.iterrows():
+        df_ct = transactions[transactions['id_client'] == df_c.loc[i, 'n']]
+        def revenus(a, b):
+            return df_ct[(df_ct['debut'] > a) & (df_ct['debut'] <= b)]['montant'].sum()
+        if len(df_ct) > 0:
+            df_c.loc[i, "revenu_total"] = revenus(-np.inf, ajd)
+            df_c.loc[i, "revenu_s_0"]   = revenus(ajd-92*2, ajd-92*0)       # semestre S
+            df_c.loc[i, "revenu_s_1"]   = revenus(ajd-92*4, ajd-92*2)       # semestre S-1
+            df_c.loc[i, "revenu_s_2"]   = revenus(ajd-92*6, ajd-92*4)       # semestre S-2
+            df_c.loc[i, "revenu_s_3"]   = revenus(ajd-92*8, ajd-92*6)       # semestre S-3
+            df_c.loc[i, "revenu_m_0"]   = revenus(ajd-30, ajd)              # mois M
+            df_c.loc[i, "revenu_m_1"]   = revenus(ajd-60, ajd-30)           # mois M-1
+            df_c.loc[i, "revenu_m_12"]  = revenus(ajd-92*8-30, ajd-92*8)    # mois M-12
+    print(df_c)
+    return df_c
+
 
 def run_airtable_full_sync():
     global data_to_export

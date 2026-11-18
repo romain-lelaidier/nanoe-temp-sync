@@ -312,49 +312,7 @@ def process_comm_tournees_recharge(df: pd.DataFrame, clients: dict = {}) -> pd.D
     return df
 
 @post_processor("prospect")
-def process_prospects(df_c: pd.DataFrame, transactions: pd.DataFrame) -> pd.DataFrame:
-    def union_decalee_df(df):
-        """Segments [debut, fin[ triés. Si un segment commence avant la fin du
-        précédent (décalé), il est repoussé juste après lui, en conservant sa longueur.
-        Exemple : [1,5[ puis [3,7[ -> [1,5[ puis [5,9[."""
-        df = df.sort_values(["debut", "fin"])
-        debuts, fins = [], []
-        fin_prec = -float("inf")
-        for d, f in zip(df["debut"], df["fin"]):
-            d2 = max(int(d), fin_prec)
-            fin_prec = d2 + (int(f) - int(d))
-            debuts.append(d2)
-            fins.append(fin_prec)
-        return pd.DataFrame({"debut": debuts, "fin": fins})
-    def intersection_segments(df, a, b):
-        """
-        Arguments:
-            df : DataFrame avec colonnes debut, fin (segments [debut, fin[, potentiellement intersectés).
-            a, b : bornes du segment requête [a, b[.
-        Retourne la longueur totale de l'intersection des segments de df avec [a, b[."""
-        out = df[(df["debut"] < b) & (df["fin"] > a)].copy()
-        out["debut"] = out["debut"].clip(lower=a)
-        out["fin"] = out["fin"].clip(upper=b)
-        return (out["fin"] - out["debut"]).sum()
-
-    ajd = (datetime.date.today() - datetime.date(1970, 1, 1)).days
-    plages = {
-        "tr3m_0": (ajd-92*(0+1), ajd-92*0),
-        "tr3m_1": (ajd-92*(1+1), ajd-92*1),
-        "tr3m_2": (ajd-92*(2+1), ajd-92*2),
-        "tr3m_3": (ajd-92*(3+1), ajd-92*3),
-    }
-
-    for i, _ in df_c.iterrows():
-        df_ct = transactions[transactions['id_client'] == df_c.loc[i, 'n']]
-        if len(df_ct) > 0:
-            df_ct = df_ct.sort_values(["debut", "fin"])
-            derniere_transaction_debut = int(df_ct["debut"].iloc[-1])
-            derniere_transaction_fin = int(df_ct["fin"].iloc[-1])
-            df_c.loc[i, 'derniere_transaction_date'] = datetime.datetime(1970, 1, 1) + datetime.timedelta(derniere_transaction_debut)
-            df_c.loc[i, 'derniere_transaction_duree_jours'] = derniere_transaction_fin - derniere_transaction_debut
-            df_ct = union_decalee_df(df_ct)
-            for key, (a, b) in plages.items():
-                df_c.loc[i, key] = intersection_segments(df_ct, a, b) / (b - a)
-
+def process_prospects(df_c: pd.DataFrame, tr: pd.DataFrame, revenus: pd.DataFrame) -> pd.DataFrame:
+    df_c = df_c.join(tr.set_index('n'), on='n')
+    df_c = df_c.join(revenus.set_index('n'), on='n')
     return df_c

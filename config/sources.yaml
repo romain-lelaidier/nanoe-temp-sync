@@ -13,7 +13,7 @@
 - name: prospect
   type: sql
   sql_file: prospect.sql
-  addons: transactions
+  addons: revenus,tr
 
 - name: tech-visites-att
   type: kobo
