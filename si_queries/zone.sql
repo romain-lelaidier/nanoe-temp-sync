@@ -13,3 +13,4 @@ left join zone zpp
 left join zone zppp
     on zpp.parent_id = zppp.id
 where z.type = 'TYPE_ZONE'
+    and z.deleted_at is null
