@@ -164,6 +164,16 @@ def process_enquetes_techniques_final(df: pd.DataFrame) -> pd.DataFrame:
         'Nord-Ouest':'Nord-Ouest','Nord-Est':'Nord-Est','Sud-Est':'Sud-Est','Sud-Ouest':'Sud-Ouest',
         'Nord Ouest':'Nord-Ouest','Nord Est':'Nord-Est','Sud Est':'Sud-Est','Sud Ouest':'Sud-Ouest'
     })
+    remap(df, "motif", {
+        'Mise en conformité': 'Mise en conformité',
+        'Visite technique': 'Visite technique',
+        'Contrôle qualité': 'Contrôle qualité', 'CQ': 'Contrôle qualité',
+        'Nouvelle installation': 'Nouvelle installation', 'Installation': 'Nouvelle installation',
+        'Visite contrôle validation projet': 'Validation projet',
+        'Dépannage': 'Dépannage',
+        'Désinstallation': 'Désinstallation',
+        'Autre': 'Autre'
+    })
     df["agent_name"] = df["agent"]
     remap(df, "agent", AGENT_MAPPER)
     df["agent"] = df["agent"].astype("Int64").astype("string")
