@@ -6,9 +6,9 @@ with nr_pas_supprimes as (
 
 select
     z.name as zone,
-    string_agg(a.nom, ',') as agence,
-    string_agg(zpp.name, ',') as commune,
-    string_agg(zppp.name, ',') as district,
+    string_agg(distinct a.nom, ',') as agence,
+    string_agg(distinct zpp.name, ',') as commune,
+    string_agg(distinct zppp.name, ',') as district,
     string_agg(distinct cast(ne.owner as varchar), ',') as ne
 from zone z
 left join agence a
